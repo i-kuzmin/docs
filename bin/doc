@@ -1,0 +1,170 @@
+#!/bin/bash
+
+# Auxiliary --------------------------------------------------------------------
+function notice
+{
+    echo "none" >/dev/null
+}
+
+function debug
+{
+    echo "$@" >/dev/stdout
+}
+
+function fatal
+{
+    echo "$@"
+    exit -1;
+}
+
+function usage
+{
+    local usage_fun=$1; shift;
+    local cmd=$1; shift;
+
+    if [[ ! "$cmd" =~  help|--help|-h|^$ ]]; then
+        echo "Unknown command: '$cmd'";
+    fi
+
+    $usage_fun
+}
+
+function toolchain
+{
+    echo $(readlink -f $(dirname ${BASH_SOURCE[0]})/..)
+}
+
+function relpath
+{
+    local source=$1
+    local target=$2
+
+    local common_part=$source # for now
+    local result="" # for now
+
+    while [[ "${target#$common_part}" == "${target}" ]]; do
+        # no match, means that candidate common part is not correct
+        # go up one level (reduce common part)
+        common_part="$(dirname $common_part)"
+        # and record that we went back, with correct / handling
+        if [[ -z $result ]]; then
+            result=".."
+        else
+            result="../$result"
+        fi
+    done
+
+    if [[ $common_part == "/" ]]; then
+        # special case for root (no common path)
+        result="$result/"
+    fi
+
+    # since we now have identified the common part,
+    # compute the non-common part
+    forward_part="${target#$common_part}"
+
+    # and now stick all parts together
+    if [[ -n $result ]] && [[ -n $forward_part ]]; then
+        result="$result$forward_part"
+    elif [[ -n $forward_part ]]; then
+        # extra slash removal
+        result="${forward_part:1}"
+    fi
+
+    echo $result
+}
+
+# Doc :: New -------------------------------------------------------------------
+function doc_new_slides
+{
+    echo "none" >/dev/null
+}
+
+function doc_new_pdf
+{
+    echo "none" >/dev/null
+}
+
+function doc_new_usage
+{
+    echo "USAGE"
+    echo "  doc new COMMAND - create new document template"
+    echo ""
+    echo "COMMANDS"
+    echo "  slides - create new slides document"
+    echo "  html   - create new article document"
+    echo "  pdf    - create new document"
+    echo "  help   - generate this message"
+}
+
+# Doc --------------------------------------------------------------------------
+function doc_new
+{
+    local cmd=$1; shift;
+    case "$cmd" in
+        pdf) doc_new_pdf "$@" ;;
+        slides) doc_new_slides "$@";;
+        *) usage doc_new_usage "$cmd";;
+    esac
+}
+
+function doc_make
+{
+    local force=false
+    local toolchain=$(toolchain)
+
+    if [ "$1" == "--force" ]; then
+        force=true
+    fi
+
+    if [ -f '.Makefile' ]; then
+        if $force; then
+            chmod +w .Makefile
+        else
+            fatal "'.Makefile' already exists"
+        fi
+    fi
+    debug "Populate 'Makefile'..."
+    local main=$(relpath $(pwd) $toolchain/makefiles/Makefile.main)
+    (
+     echo "# Generated with doc release 0.1."
+     echo "# Do not modify this file manually"
+     echo ""
+     echo "Makefile.main := $main"
+     echo ""
+     echo 'ifeq (,$(wildcard ${Makefile.main}))'
+     echo "  \$(error toolchain wasn't found, use 'doc make --force' to generate new '.Makefile')"
+     echo "endif"
+     echo ""
+     echo 'include ${Makefile.main}'
+    ) > .Makefile
+    chmod -w .Makefile
+}
+
+function doc_usage
+{
+    echo "USAGE"
+    echo "  doc COMMAND - asciidoc publishing helper"
+    echo ""
+    echo "COMMANDS"
+    echo "  new     - create new document"
+    echo "  make    - generate 'Makefile'"
+    echo "  help    - print this message"
+}
+
+# Entry ------------------------------------------------------------------------
+function main
+{
+    local cmd=$1; shift;
+    case "$cmd" in
+        make) doc_make "$@" ;;
+        new) doc_new "$@" ;;
+        --help|help) doc_usage ;;
+        *) usage doc_usage "$cmd" ;;
+    esac
+}
+
+main "$@"
+
+
+# vim: fdm=marker foldmarker={,}

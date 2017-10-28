@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # Auxiliary --------------------------------------------------------------------
+VERSION=0.1
+
 function notice
 {
     echo "none" >/dev/null
@@ -75,6 +77,12 @@ function relpath
 }
 
 # Doc :: New -------------------------------------------------------------------
+
+function doc_version
+{
+    echo "$VERSION.$(git --git-dir=$(toolchain)/.git rev-parse --short HEAD)"
+}
+
 function doc_new_slides
 {
     echo "none" >/dev/null
@@ -124,19 +132,21 @@ function doc_make
             fatal "'.Makefile' already exists"
         fi
     fi
+    
+
     debug "Populate 'Makefile'..."
     local main=$(relpath $(pwd) $toolchain/makefiles/Makefile.main)
     (
-     echo "# Generated with doc release 0.1."
-     echo "# Do not modify this file manually"
-     echo ""
-     echo "Makefile.main := $main"
-     echo ""
-     echo 'ifeq (,$(wildcard ${Makefile.main}))'
-     echo "  \$(error toolchain wasn't found, use 'doc make --force' to generate new '.Makefile')"
-     echo "endif"
-     echo ""
-     echo 'include ${Makefile.main}'
+        echo "# Generated using doc $(doc_version)"
+        echo "# Do not modify this file manually"
+        echo ""
+        echo "Makefile.main := $main"
+        echo ""
+        echo 'ifeq (,$(wildcard ${Makefile.main}))'
+        echo "  \$(error toolchain wasn't found, use 'doc make --force' to generate new '.Makefile')"
+        echo "endif"
+        echo ""
+        echo 'include ${Makefile.main}'
     ) > .Makefile
     chmod -w .Makefile
 }
@@ -149,6 +159,7 @@ function doc_usage
     echo "COMMANDS"
     echo "  new     - create new document"
     echo "  make    - generate 'Makefile'"
+    echo "  version - print version number"
     echo "  help    - print this message"
 }
 
@@ -159,6 +170,7 @@ function main
     case "$cmd" in
         make) doc_make "$@" ;;
         new) doc_new "$@" ;;
+        version) doc_version ;;
         --help|help) doc_usage ;;
         *) usage doc_usage "$cmd" ;;
     esac

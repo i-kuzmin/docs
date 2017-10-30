@@ -1,0 +1,5 @@
+%!options(html): --css-sugar
+%!includeconf: txt2tagsrc.mathjax
+%!includeconf: txt2tagsrc.d3
+%!style(html): t2t.css
+%!encoding(html): utf-8

@@ -1,83 +1,59 @@
+__this := $(lastword $(MAKEFILE_LIST))
 
 BUILD := .build
 BUILD.pdf := ${BUILD}/pdf
 BUILD.html := ${BUILD}/html
 
-A2X := a2x
-ifneq (,$(wildcard imags))
-	A2X_FLAGS += -r imgs
-endif
-A2X_FLAGS.html += ${A2X_FLAGS} -D ${BUILD.html} -f xhtml
-A2X_FLAGS.pdf  += ${A2X_FLAGS} -D ${BUILD.pdf} -f pdf --dblatex-opts " -P doc.layout=\"coverpage mainmatter\" -P doc.publisher.show=0"
+DIRS += ${BUILD}      \
+        ${BUILD.pdf}  \
+        ${BUILD.html} \
 
 ECHO  := @echo
 MKDIR := mkdir
 MV    := mv
+RM    := rm -rf
+CP    := cp
 
+TOOLCHAIN := $(realpath $(dir ${__this})..)
 
-# Default source
-__default_src := $(notdir ${CURDIR}).txt
-ifneq (,$(wildcard ${__default_src}))
-	SOURCE.asciidoc += ${__default_src}
+all:
+
+ifndef DEBUG
+    MAKEFLAGS += -s
 endif
 
-
-ifeq "${DEBUG}" "YES"
-A2X_FLAGS += --verbose
-else
-MAKEFLAGS += -s
-endif
-
-__make_pdf=$(call ___make_pdf,$1,$(basename $1).pdf)
-define ___make_pdf =
-$2: $1 |${BUILD.pdf}
-	${ECHO} "#  compile[pdf]  $$<"
-	${A2X} ${A2X_FLAGS.pdf} $$<
-	${MV} ${BUILD.pdf}/$$@ $$@
-	${ECHO} "#  done $$@"
-__CLEAN_PDF += $2
-__ALL_PDF += $2
+define __make_dir =
+$1:
+	${ECHO} "#  create $$@"
+	${MKDIR} -p $$@
 endef
 
-__make_html=$(call ___make_html,$1,$(basename $1).html)
-define ___make_html =
-${BUILD.html}/$2: $1 |${BUILD.html}
-	${ECHO} "#  compile[html] $$<"
-	${A2X} ${A2X_FLAGS.html} $$<
-__CLEAN_HTML += ${BUILD.html}/$2
-__ALL_HTML += ${BUILD.html}/$2
-endef
-#@${MV} ${BUILD}/$$@ $$@
+make_dir=$(eval $(call __make_dir,$1))
+$(foreach dirname,$(sort ${DIRS}),$(call make_dir,${dirname}))
 
-asciidoc_to_pdf=$(eval $(call __make_pdf,$1))
-asciidoc_to_html=$(eval $(call __make_html,$1))
-
-$(foreach src,${SOURCE.asciidoc},$(call asciidoc_to_html,${src}))
-$(foreach src,${SOURCE.asciidoc},$(call asciidoc_to_pdf,${src}))
-
-${BUILD} ${BUILD.pdf} ${BUILD.html}:
-	${MKDIR} -p $@
+include ${TOOLCHAIN}/makefiles/Makefile.drivers
 
 __DEEP_CLEAN += ${BUILD}
 
-.PHONY: clean deep_clean __deep_clean __clean_pdf __clean_html all pdf html
+.PHONY: clean deep_clean __deep_clean all pdf html
+
 deep_clean: __deep_clean
 clean: clean_pdf clean_html
 
-pdf: ${__ALL_PDF}
-html: ${__ALL_HTML}
+pdf: ${ALL_PDF}
+html: ${ALL_HTML}
 
 clean_pdf:
 	${ECHO} "#  clean pdf..."
-	${RM} -rf ${__CLEAN_PDF}
+	${RM} ${CLEAN_PDF}
 
 clean_html:
 	${ECHO} "#  clean html..."
-	${RM} -rf ${__CLEAN_HTML}
+	${RM} ${CLEAN_HTML}
 
 __deep_clean:
 	${ECHO} "#  deep clean..."
-	${RM} -rf ${__DEEP_CLEAN}
+	${RM} ${__DEEP_CLEAN}
 
 #disable default rules
 MAKEFLAGS += --no-builtin-rules

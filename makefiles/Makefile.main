@@ -24,14 +24,14 @@ endif
 
 define __make_dir =
 $1:
-	${ECHO} "#  create $$@"
+	${ECHO} "#  create '$$@'"
 	${MKDIR} -p $$@
 endef
 
 make_dir=$(eval $(call __make_dir,$1))
 $(foreach dirname,$(sort ${DIRS}),$(call make_dir,${dirname}))
 
-include ${TOOLCHAIN}/makefiles/Makefile.drivers
+include ${TOOLCHAIN}/makefiles/drivers.mk
 
 __DEEP_CLEAN += ${BUILD}
 
@@ -39,17 +39,18 @@ __DEEP_CLEAN += ${BUILD}
 
 deep_clean: __deep_clean
 clean: clean_pdf clean_html
+	${RM} $(sort ${CLEAN})
 
 pdf: ${ALL_PDF}
 html: ${ALL_HTML}
 
 clean_pdf:
 	${ECHO} "#  clean pdf..."
-	${RM} ${CLEAN_PDF}
+	${RM} $(sort ${CLEAN_PDF})
 
 clean_html:
 	${ECHO} "#  clean html..."
-	${RM} ${CLEAN_HTML}
+	${RM} $(sort ${CLEAN_HTML})
 
 __deep_clean:
 	${ECHO} "#  deep clean..."

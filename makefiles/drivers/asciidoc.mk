@@ -16,8 +16,8 @@ ifeq "${DEBUG}" "YES"
 	A2X_FLAGS += --verbose
 endif
 
-asciidoc__make_pdf=$(call ___make_pdf,$1,$(basename $1).pdf)
-define ___make_pdf =
+asciidoc__make_pdf=$(call asciidoc___make_pdf,$1,$(basename $1).pdf)
+define asciidoc___make_pdf =
 $2: $1 |${BUILD.pdf}
 	${ECHO} "#  compile [pdf] $$<"
 	${A2X} ${A2X_FLAGS.pdf} $$<
@@ -33,7 +33,7 @@ ASCIIDOC_FLAGS := -a toolchain=${TOOLCHAIN} \
    				  -f ${TOOLCHAIN}/asciidoc/asciidoc.conf
 define asciidoc__make_html_impl =
 ${BUILD.html}/$2: $1 |${BUILD.html}
-	${ECHO} "#  compile [html] $$<"
+	${ECHO} "#  compile [asciidoc:html] $$<"
 	${ASCIIDOC} ${ASCIIDOC_FLAGS} -o $$@ -b html5 $$<
 CLEAN_HTML += ${BUILD.html}/$2
 ALL_HTML += ${BUILD.html}/$2
@@ -42,5 +42,5 @@ endef
 asciidoc__to_pdf=$(eval $(call asciidoc__make_pdf,$1))
 asciidoc__to_html=$(eval $(call asciidoc__make_html,$1))
 
-$(foreach src,${SOURCE.asciidoc},$(call asciidoc__to_html,${src}))
-$(foreach src,${SOURCE.asciidoc},$(call asciidoc__to_pdf,${src}))
+$(foreach src,${SOURCE.adoc},$(call asciidoc__to_html,${src}))
+$(foreach src,${SOURCE.adoc},$(call asciidoc__to_pdf,${src}))

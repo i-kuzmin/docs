@@ -1,3 +1,4 @@
+
 == Overview ==
 
 Project itself is a set of tools and makefiles for easy documents publishing.
@@ -6,4 +7,8 @@ And primary output formats are pdf, html and slides.
 
 
 == Usage ==
+
+== VARIABLES ==
+
+`BACKEND.adoc = asciidoc | asciidoctor` - optional `adoc` backend.
 

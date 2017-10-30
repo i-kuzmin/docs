@@ -1,6 +1,6 @@
 __this := $(lastword $(MAKEFILE_LIST))
 
-BUILD := .build
+BUILD := target
 BUILD.pdf := ${BUILD}/pdf
 BUILD.html := ${BUILD}/html
 

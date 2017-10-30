@@ -1,11 +1,16 @@
 # === Ascii doc ===
-__default_src := $(notdir ${CURDIR}).txt
+__default_src := $(notdir ${CURDIR}).adoc
 ifneq (,$(wildcard ${__default_src}))
-  SOURCE.asciidoc += ${__default_src}
+  SOURCE.adoc += ${__default_src}
 endif
 
-ifneq (,${SOURCE.asciidoc})
-  include ${TOOLCHAIN}/makefiles/drivers/Makefile.asciidoc
+ifneq (,${SOURCE.adoc})
+  ADOC_VERSION := $(shell asciidoctor -V)
+  ifneq (,${ADOC_VERSION})
+    include ${TOOLCHAIN}/makefiles/drivers/Makefile.asciidoctor
+  else
+    include ${TOOLCHAIN}/makefiles/drivers/Makefile.asciidoc
+  endif
 endif
 
 # === Txt2Tags ===

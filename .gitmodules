@@ -1,0 +1,6 @@
+[submodule "asciidoctor/extensions-lab"]
+	path = asciidoctor/extensions-lab
+	url = https://github.com/asciidoctor/asciidoctor-extensions-lab.git
+[submodule "asciidoctor/stylesheet-factory"]
+	path = asciidoctor/stylesheet-factory
+	url = https://github.com/asciidoctor/asciidoctor-stylesheet-factory.git

@@ -24,8 +24,10 @@ $(foreach src,${SOURCE.adoc},$(eval $(call asciidoctor__make_pdf,${src},$(basena
 # HTML driver
 #
 
-ASCIIDOCTOR_FLAGS := -a toolchain=${TOOLCHAIN}
-#   				  -f ${TOOLCHAIN}/asciidoctor/asciidoctor.conf
+asciidoctor_ext := ${TOOLCHAIN}/asciidoctor
+
+ASCIIDOCTOR_FLAGS := -a toolchain=${TOOLCHAIN} \
+					 -r ${asciidoctor_ext}/attributes.rb
 
 define asciidoctor__make_html_impl =
 ${BUILD.html}/$2: $1 |${BUILD.html}

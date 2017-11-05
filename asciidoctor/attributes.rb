@@ -1,16 +1,15 @@
 require 'asciidoctor/extensions' unless RUBY_ENGINE == 'opal'
 
-class GitMetadataPreprocessor < Asciidoctor::Extensions::Preprocessor
-  def process document, reader
-    attrs = document.attributes
-    attrs['data-uri'] = true
-    attrs['allow-uri-read'] = true
-    attrs['stylesdir'] = File.dirname(__FILE__) + "/styles"
-    attrs['stylesheet'] = 'asciidoctor-default.css'
-    nil
-  end
+def load_ext name
+    if File.exist? File.dirname(__FILE__) + "/#{name}.rb"
+        begin
+            RUBY_ENGINE == 'opal' ? (require name) : (require_relative name)
+            $stdout.puts "#  loaded extension: " + File.basename(name)
+        rescue LoadError => e
+            $stdout.puts "#  load extension (#{File.basename(name)}) failed: #{e}"
+        end
+    else
+        $stdout.puts "#  missed extension: " + File.basname(name)
+    end
 end
 
-Asciidoctor::Extensions.register do
-  preprocessor GitMetadataPreprocessor
-end

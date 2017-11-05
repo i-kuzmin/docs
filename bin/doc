@@ -168,6 +168,7 @@ function main
 {
     local cmd=$1; shift;
     case "$cmd" in
+        css) doc_css "$@" ;;
         make) doc_make "$@" ;;
         new) doc_new "$@" ;;
         version) doc_version ;;

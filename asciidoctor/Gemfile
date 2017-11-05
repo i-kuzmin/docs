@@ -1,0 +1,10 @@
+source 'https://rubygems.org'
+
+if File.exists? 'extensions-lab/lib/git-metadata-preprocessor.rb'
+    gem 'rugged'
+end
+
+gem 'asciidoctor'
+gem 'pygments.rb'
+gem 'asciidoctor-pdf'
+gem 'asciidoctor-latex'

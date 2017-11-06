@@ -5,7 +5,11 @@ ifneq (,$(wildcard ${__default_src}))
 endif
 
 ifneq (,${SOURCE.adoc})
-  include ${TOOLCHAIN}/makefiles/drivers/adoc.mk
+  ifeq (,$(filter ${BACKEND.adoc},asciidoctor asciidoc))
+    $(error Unknown 'adoc' backed: '${BACKEND.adoc}')
+  else
+    include ${TOOLCHAIN}/makefiles/drivers/$(strip ${BACKEND.adoc}).mk
+  endif
 endif
 
 # === Txt2Tags ===

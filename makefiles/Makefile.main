@@ -1,6 +1,6 @@
 __this := $(lastword $(MAKEFILE_LIST))
 
-BUILD := target
+BUILD ?= target
 BUILD.pdf := ${BUILD}/pdf
 BUILD.html := ${BUILD}/html
 BUILD.latex := ${BUILD}/latex
@@ -17,6 +17,9 @@ RM    := rm -rf
 CP    := cp
 
 TOOLCHAIN := $(realpath $(dir ${__this})..)
+
+#available adoc backends: asciidoc | asciidocotor
+BACKEND.adoc ?= asciidoctor
 
 all:
 

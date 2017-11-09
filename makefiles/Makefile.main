@@ -21,8 +21,6 @@ TOOLCHAIN := $(realpath $(dir ${__this})..)
 #available adoc backends: asciidoc | asciidocotor
 BACKEND.adoc ?= asciidoctor
 
-all:
-
 ifndef DEBUG
     MAKEFLAGS += -s
 endif
@@ -44,28 +42,38 @@ __DEEP_CLEAN += ${BUILD}
 
 deep_clean: __deep_clean
 clean: clean_pdf clean_html clean_latex
+ifneq (,${CLEAN})
+	${ECHO} "#  clean..."
 	${RM} $(sort ${CLEAN})
+endif
 
 pdf: ${ALL_PDF}
 html: ${ALL_HTML}
 latex: ${ALL_LATEX}
 
 clean_pdf:
+ifneq (,${CLEAN_PDF})
 	${ECHO} "#  clean pdf..."
 	${RM} $(sort ${CLEAN_PDF})
+endif
 
 clean_html:
+ifneq (,${CLEAN_HTML})
 	${ECHO} "#  clean html..."
 	${RM} $(sort ${CLEAN_HTML})
+endif
 
 clean_latex:
+ifneq (,${CLEAN_LATEX})
 	${ECHO} "#  clean latex..."
 	${RM} $(sort ${CLEAN_LATEX})
+endif
 
 __deep_clean:
 	${ECHO} "#  deep clean..."
 	${RM} ${__DEEP_CLEAN}
 
+.DEFAULT_GOAL := ${ALL}
 #disable default rules
 MAKEFLAGS += --no-builtin-rules
 .SUFFIXES:

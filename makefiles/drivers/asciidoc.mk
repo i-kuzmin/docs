@@ -30,7 +30,7 @@ endef
 asciidoc__make_html=$(call asciidoc__make_html_impl,$1,$(basename $1).html)
 
 ASCIIDOC_FLAGS := -a toolchain=${TOOLCHAIN} \
-   				  -f ${TOOLCHAIN}/asciidoc/asciidoc.conf
+   				  -f ${TOOLCHAIN}/etc/asciidoc/asciidoc.conf
 define asciidoc__make_html_impl =
 ${BUILD.html}/$2: $1 |${BUILD.html}
 	${ECHO} "#  compile [asciidoc:html] $$<"

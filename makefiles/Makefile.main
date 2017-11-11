@@ -1,14 +1,18 @@
 __this := $(lastword $(MAKEFILE_LIST))
 
 BUILD ?= target
-BUILD.pdf := ${BUILD}/pdf
-BUILD.html := ${BUILD}/html
 BUILD.latex := ${BUILD}/latex
+BUILD.html  := ${BUILD}/html
+BUILD.pdf   := ${BUILD}/pdf
+BUILD.png   := ${BUILD}/png
+BUILD.svg   := ${BUILD}/svg
 
 DIRS += ${BUILD}       \
         ${BUILD.pdf}   \
         ${BUILD.html}  \
         ${BUILD.latex} \
+        ${BUILD.svg}   \
+        ${BUILD.png}   \
 
 ECHO  := @echo
 MKDIR := mkdir
@@ -18,62 +22,74 @@ CP    := cp
 
 TOOLCHAIN := $(realpath $(dir ${__this})..)
 
-#available adoc backends: asciidoc | asciidocotor
 BACKEND.adoc ?= asciidoctor
 
 ifndef DEBUG
     MAKEFLAGS += -s
 endif
 
-define __make_dir =
-$1:
-	${ECHO} "#  create '$$@'"
-	${MKDIR} -p $$@
-endef
-
-make_dir=$(eval $(call __make_dir,$1))
-$(foreach dirname,$(sort ${DIRS}),$(call make_dir,${dirname}))
-
 include ${TOOLCHAIN}/makefiles/drivers.mk
 
-__DEEP_CLEAN += ${BUILD}
 
-.PHONY: clean deep_clean __deep_clean all pdf html
+.PHONY: clean deep_clean help
 
-deep_clean: __deep_clean
-clean: clean_pdf clean_html clean_latex
+# --- Clean Rules ---
+
+main__add_ext = $(eval $(call main__do_add_ext,$1,$2))
+define main__do_add_ext =
+$1: $${ALL_$2}
+clean_$1:
+ifneq (,$$(wildcard $${CLEAN_$2}))
+	${ECHO} "#  clean $1..."
+	${RM} $(sort $${CLEAN_$2})
+endif
+clean: clean_$1
+.PHONY: $1
+endef
+
+$(call main__add_ext,pdf,PDF)
+$(call main__add_ext,html,HTML)
+$(call main__add_ext,latex,LATEX)
+$(call main__add_ext,svg,SVG)
+$(call main__add_ext,png,PNG)
+
+# --- ---
+
+clean:
 ifneq (,${CLEAN})
 	${ECHO} "#  clean..."
 	${RM} $(sort ${CLEAN})
 endif
 
-pdf: ${ALL_PDF}
-html: ${ALL_HTML}
-latex: ${ALL_LATEX}
+# --- ---
 
-clean_pdf:
-ifneq (,${CLEAN_PDF})
-	${ECHO} "#  clean pdf..."
-	${RM} $(sort ${CLEAN_PDF})
-endif
-
-clean_html:
-ifneq (,${CLEAN_HTML})
-	${ECHO} "#  clean html..."
-	${RM} $(sort ${CLEAN_HTML})
-endif
-
-clean_latex:
-ifneq (,${CLEAN_LATEX})
-	${ECHO} "#  clean latex..."
-	${RM} $(sort ${CLEAN_LATEX})
-endif
-
-__deep_clean:
+deep_clean:
 	${ECHO} "#  deep clean..."
-	${RM} ${__DEEP_CLEAN}
+	${RM} ${DEEP_CLEAN}
+DEEP_CLEAN += ${BUILD}
 
-.DEFAULT_GOAL := ${ALL}
+# --- Make Directory rule ---
+define main__make_dir =
+$1:
+	${ECHO} "#  create '$$@'"
+	${MKDIR} -p $$@
+endef
+$(foreach dirname,$(sort ${DIRS}),\
+	$(eval $(call main__make_dir,${dirname})))
+# ---
+
+help:
+	$(ECHO) "#  General:"
+	$(ECHO) "#    toolchain: '${TOOLCHAIN}'"
+	$(ECHO) "#    BUILD=YES      - destination root ('${BUILD}')"
+	$(ECHO) "#    DEBUG          - enable debug/verbose output ('${DEBUG}')"
+	$(ECHO) "#    SOURCES.<ext>  - explicit sources"
+	$(ECHO) "#    ALL            - default target to build"
+	$(ECHO) ""
+
+all: ${ALL}
+
+.DEFAULT_GOAL := all
 #disable default rules
 MAKEFLAGS += --no-builtin-rules
 .SUFFIXES:

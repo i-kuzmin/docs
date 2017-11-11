@@ -1,8 +1,8 @@
 ifdef DEBUG
-    $(info #  Load t2t driver)
+  $(info #  Load t2t driver)
 endif
 
-TXT2TAGS = txt2tags --config-file ${TOOLCHAIN}/txt2tags/txt2tagsrc
+TXT2TAGS = txt2tags --config-file ${TOOLCHAIN}/etc/txt2tags/txt2tagsrc
 ifndef DEBUG
   TXT2TAGS += -q
 endif
@@ -19,7 +19,7 @@ t2t__to_html=$(eval $(call t2t__make_html,$1,$(basename $1).html))
 
 $(foreach src,${SOURCE.t2t},$(call t2t__to_html,${src}))
 
-${BUILD.html}/t2t.css: ${TOOLCHAIN}/txt2tags/t2t.css
+${BUILD.html}/t2t.css: ${TOOLCHAIN}/etc/txt2tags/t2t.css
 	${ECHO} "#  install [t2t] t2t.css"
 	${CP} $< $@
 

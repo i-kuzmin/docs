@@ -1,0 +1,18 @@
+#set term qt size 800,600 enhanced font 'Verdana,10'
+#set terminal pngcairo size 800,600 enhanced font 'Verdana,10'
+#set output '{{OUTPUT}}'
+
+# Color definitions
+set border linewidth 1.5
+set style line 1 lc rgb '#0060ad' lt 1 lw 2 # --- blue
+set style line 2 lc rgb '#dd181f' lt 1 lw 2 pt 7 # --- redunset border
+# Axes
+set style line 11 lc rgb '#808080' lt 1
+set border 3 back ls 11
+set arrow from graph 0.95,0 to graph 1,0 size screen 0.025,15,60 filled ls 11
+set arrow from graph 0,0.95 to graph 0,1 size screen 0.025,15,60 filled ls 11
+# Grid
+set style line 12 lc rgb'#808080' lt 0 lw 1
+set grid back ls 12
+
+# vim: ft=gnuplot

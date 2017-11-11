@@ -2,8 +2,10 @@ ifdef DEBUG
     $(info #  Load asciidoctortor driver)
 endif
 
-asciidoctor_ext := ${TOOLCHAIN}/asciidoctor
+asciidoctor_ext := ${TOOLCHAIN}/etc/asciidoctor
 ASCIIDOCTOR := asciidoctor
+
+SOURCE.adoc := $(sort ${SOURCE.adoc})
 
 #
 # PDF driver

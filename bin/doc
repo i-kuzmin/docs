@@ -36,6 +36,19 @@ function toolchain
     echo $(readlink -f $(dirname ${BASH_SOURCE[0]})/..)
 }
 
+function if_set
+{
+    local val=$1; shift;
+    if ! [ -z "$val" ]; then
+        echo "($val)"
+    fi
+}
+
+function proj
+{
+    echo $(basename $(pwd))
+}
+
 function relpath
 {
     local source=$1
@@ -93,16 +106,79 @@ function doc_new_pdf
     echo "none" >/dev/null
 }
 
+function doc_new_html
+{
+    echo "none" >/dev/null
+}
+
+function doc_new_impl
+{
+    local template=$1; shift;
+    local ext=$1; shift;
+    local name=$1; shift;
+
+    local implicit_name=$(proj).${ext};
+
+    if [ -z "$name" ]; then
+        name=$implicit_name
+    fi
+
+    if ! [[ "$name" =~ ^.+\.${ext}$ ]]; then
+        name=$name.${ext}
+    fi
+
+    if [ -e "$name" ]; then
+        fatal "File with name '$name' is already exists"
+    fi
+
+    local doc_name=${DOC_NAME:$(basename $name .$ext)}
+
+    debug "Creating new $template: '$name'"
+    sed -e 's/{{OUTPUT}}/'"$name"'/g' \
+        -e 's/{{DOC_NAME}}/'"$doc_name"'/g' \
+        -e 's/{{DOC_AUTHOR}}/'"$DOC_AUTHOR"'/g' \
+        $(toolchain)/etc/templates/${template} >$name
+    if [ "$name" != "$implicit_name" ]; then
+        debug "Add '$name' to Makefile"
+        sed -e 'b s' \
+            \
+            -e ':end $q' -e 'N; b end'\
+            \
+            -e ':s /\\$/{N;b s}' \
+            -e ' /'"SOURCE.$ext"'\s*\(:\|+\)\?=\s*/{s/$/ '"$name"'/; b end}' \
+            \
+            -e ' /include\s\+.Makefile/{i '"SOURCE.$ext"' := '"$name\n"'' -e 'b end}' \
+            -i Makefile
+    fi
+}
+
+function doc_new_plot
+{
+    doc_new_impl gnuplot plt $@
+}
+
+function doc_new_adoc
+{
+    doc_new_impl asciidoctor adoc $@
+}
+
 function doc_new_usage
 {
     echo "USAGE"
     echo "  doc new COMMAND - create new document template"
     echo ""
     echo "COMMANDS"
-    echo "  slides - create new slides document"
-    echo "  html   - create new article document"
-    echo "  pdf    - create new document"
-    echo "  help   - generate this message"
+    echo "  slides              - create new slides document"
+    echo "  html                - create new article document"
+    echo "  pdf                 - create new document"
+
+    echo "  plot name|name.plt  - create new gnuplot file"
+    echo "  adoc name|name.adoc - create new asciidoc file"
+    echo "  help                - generate this message"
+    echo ""
+    echo "ENVIRONMENTs"
+    echo "  DOC_AUTHOR - Default Author Name" $(if_set $DOC_AUTHOR)
+    echo "  DOC_NAME   - Default Document Name" $(if_set $DOC_NAME)
 }
 
 # Doc --------------------------------------------------------------------------
@@ -112,6 +188,14 @@ function doc_new
     case "$cmd" in
         pdf) doc_new_pdf "$@" ;;
         slides) doc_new_slides "$@";;
+        html) doc_new_html "$@";;
+
+        plot|gnuplot) doc_new_plot "$@";;
+        *.gpi|*.plt) doc_new_plot "$cmd" "$@";;
+
+        adoc) doc_new_adoc "$@";;
+        *.adoc) doc_new_adoc "$cmd" "$@";;
+
         *) usage doc_new_usage "$cmd";;
     esac
 }
@@ -132,7 +216,7 @@ function doc_make
             fatal "'.Makefile' already exists"
         fi
     fi
-    
+
 
     debug "Populate 'Makefile'..."
     local main=$(relpath $(pwd) $toolchain/makefiles/Makefile.main)

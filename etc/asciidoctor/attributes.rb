@@ -16,9 +16,12 @@ def load_extension name
 end
 
 $stdout::puts "#  load '#{ENV['BACKEND']}' attributes" if ENV["DEBUG"]
-load_extension 'extensions-lab/lib/chart-block-macro' if ENV['BACKEND'] == 'html'
-load_extension 'pdf/lib/asciidoctor-pdf' if ENV['BACKEND'] == 'pdf'
+
 load_extension 'extensions-lab/lib/git-metadata-preprocessor' if false
+
+load_extension 'extensions-lab/lib/chart-block-macro' if ENV['BACKEND'] == 'html'
+
+load_extension 'pdf/lib/asciidoctor-pdf' if ENV['BACKEND'] == 'pdf'
 
 # All backends attributes
 class AttributesPreprocessor < Asciidoctor::Extensions::Preprocessor
@@ -37,7 +40,7 @@ class AttributesPreprocessor < Asciidoctor::Extensions::Preprocessor
   end
 end
 
-# Html attributes
+# pdf attributes
 class PdfAttributesPreprocessor < Asciidoctor::Extensions::Preprocessor
   def process document, reader
     attrs = document.attributes
@@ -45,7 +48,7 @@ class PdfAttributesPreprocessor < Asciidoctor::Extensions::Preprocessor
   end
 end
 
-# pdf attributes
+# html attributes
 class HtmlAttributesPreprocessor < Asciidoctor::Extensions::Preprocessor
   def process document, reader
     attrs = document.attributes

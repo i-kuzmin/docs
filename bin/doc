@@ -89,6 +89,52 @@ function relpath
     echo $result
 }
 
+function add_dot_make
+{
+    local force=false
+    local toolchain=$(toolchain)
+
+    if [ "$1" == "--force" ]; then
+        force=true
+    fi
+
+    if [ -f '.Makefile' ]; then
+        if $force; then
+            chmod +w .Makefile
+        else
+            fatal "'.Makefile' is already exists"
+        fi
+    fi
+
+    debug "Populate '.Makefile'..."
+    local main=$(relpath $(pwd) $toolchain/makefiles/Makefile.main)
+    (
+        echo "# Generated using doc $(doc_version)"
+        echo "# Do not modify this file manually"
+        echo ""
+        echo "Makefile.main := $main"
+        echo ""
+        echo 'ifeq (,$(wildcard ${Makefile.main}))'
+        echo "  \$(error toolchain wasn't found, use 'doc make --force' to generate new '.Makefile')"
+        echo "endif"
+        echo ""
+        echo 'include ${Makefile.main}'
+    ) > .Makefile
+    chmod -w .Makefile
+}
+
+function add_make
+{
+    if ! [ -f Makefile ]; then
+        touch Makefile
+    fi
+
+    if ! grep -P "^\s*include\s+.Makefile\b" Makefile >/dev/null; then
+        debug "Include toolchain to 'Makefile'"
+        echo "include .Makefile" >> Makefile
+    fi
+}
+
 # Doc :: New -------------------------------------------------------------------
 
 function doc_version
@@ -131,7 +177,7 @@ function doc_new_impl
         fatal "File with name '$name' is already exists"
     fi
 
-    local doc_name=${DOC_NAME:$(basename $name .$ext)}
+    local doc_name=${DOC_NAME:-$(basename $name .$ext)}
 
     debug "Creating new $template: '$name'"
     sed -e 's/{{OUTPUT}}/'"$name"'/g' \
@@ -202,36 +248,8 @@ function doc_new
 
 function doc_make
 {
-    local force=false
-    local toolchain=$(toolchain)
-
-    if [ "$1" == "--force" ]; then
-        force=true
-    fi
-
-    if [ -f '.Makefile' ]; then
-        if $force; then
-            chmod +w .Makefile
-        else
-            fatal "'.Makefile' is already exists"
-        fi
-    fi
-
-    debug "Populate 'Makefile'..."
-    local main=$(relpath $(pwd) $toolchain/makefiles/Makefile.main)
-    (
-        echo "# Generated using doc $(doc_version)"
-        echo "# Do not modify this file manually"
-        echo ""
-        echo "Makefile.main := $main"
-        echo ""
-        echo 'ifeq (,$(wildcard ${Makefile.main}))'
-        echo "  \$(error toolchain wasn't found, use 'doc make --force' to generate new '.Makefile')"
-        echo "endif"
-        echo ""
-        echo 'include ${Makefile.main}'
-    ) > .Makefile
-    chmod -w .Makefile
+    add_make "$@"
+    add_dot_make "$@"
 }
 
 function doc_usage

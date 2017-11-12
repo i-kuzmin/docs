@@ -14,14 +14,13 @@ SOURCE.adoc := $(sort ${SOURCE.adoc})
 asciidoctor__make_pdf = $(call asciidoctor___make_pdf,$1,${BUILD.pdf}/$(basename $1).pdf)
 define asciidoctor___make_pdf =
 $2: $1 |${BUILD.pdf}
-	${ECHO} "#  compile [asciidoctor:pdf] $$<"
-	${ASCIIDOCTOR} -r ${asciidoctor_ext}/attributes.rb \
-	   			   -r asciidoctor-pdf \
-			   	   -o $$@ -b pdf $$<
+	${ECHO} "#  compile [$$<] $$@"
+	BACKEND=pdf ${ASCIIDOCTOR} \
+	  -r ${asciidoctor_ext}/attributes.rb \
+      -b pdf -o $$@ $$<
 CLEAN_PDF += $2
 ALL_PDF += $2
 endef
-
 $(foreach src,${SOURCE.adoc},$(eval $(call asciidoctor__make_pdf,${src})))
 
 #
@@ -31,8 +30,10 @@ $(foreach src,${SOURCE.adoc},$(eval $(call asciidoctor__make_pdf,${src})))
 asciidoctor__make_html = $(eval $(call asciidoctor__make_html_impl,$1,${BUILD.html}/$(basename $1).html))
 define asciidoctor__make_html_impl =
 $2: $1 |${BUILD.html}
-	${ECHO} "#  compile [asciidoctor:html] $$<"
-	${ASCIIDOCTOR} -r ${asciidoctor_ext}/attributes.rb -o $$@ -b html5 $$<
+	${ECHO} "#  compile [$$<] $$@"
+	BACKEND=html ${ASCIIDOCTOR} \
+	   	-r ${asciidoctor_ext}/attributes.rb \
+        -o $$@ -b html5 $$<
 CLEAN_HTML += $2
 ALL_HTML += $2
 endef
@@ -45,7 +46,7 @@ $(foreach src,${SOURCE.adoc},$(call asciidoctor__make_html,${src}))
 asciidoctor__make_latex = $(eval $(call asciidoctor__make_latex_impl,$1,${BUILD.latex}/$(basename $1).latex))
 define asciidoctor__make_latex_impl =
 $2: $1 |${BUILD.latex}
-	${ECHO} "#  compile [asciidoctor:latex] $$<"
+	${ECHO} "#  compile [$$<] $$@"
 	${ASCIIDOCTOR} -r asciidoctor-latex -o $$@ -b latex $$<
 CLEAN_LATEX += $2
 ALL_LATEX += $2

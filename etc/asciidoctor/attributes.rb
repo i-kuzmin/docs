@@ -17,7 +17,7 @@ end
 
 $stdout::puts "#  load '#{ENV['BACKEND']}' attributes" if ENV["DEBUG"]
 load_extension 'extensions-lab/lib/chart-block-macro' if ENV['BACKEND'] == 'html'
-load_extension 'asciidocotor-pdf/lib/asciidoctor-pdf' if ENV['BACKEND'] == 'pdf'
+load_extension 'pdf/lib/asciidoctor-pdf' if ENV['BACKEND'] == 'pdf'
 load_extension 'extensions-lab/lib/git-metadata-preprocessor' if false
 
 # All backends attributes

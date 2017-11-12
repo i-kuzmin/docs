@@ -1,0 +1,6 @@
+[submodule "etc/asciidoctor/extensions-lab"]
+	path = etc/asciidoctor/extensions-lab
+	url = https://github.com/asciidoctor/asciidoctor-extensions-lab.git
+[submodule "etc/asciidoctor/pdf"]
+	path = etc/asciidoctor/pdf
+	url = https://github.com/asciidoctor/asciidoctor-pdf

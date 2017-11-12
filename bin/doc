@@ -213,10 +213,9 @@ function doc_make
         if $force; then
             chmod +w .Makefile
         else
-            fatal "'.Makefile' already exists"
+            fatal "'.Makefile' is already exists"
         fi
     fi
-
 
     debug "Populate 'Makefile'..."
     local main=$(relpath $(pwd) $toolchain/makefiles/Makefile.main)

@@ -15,7 +15,7 @@ asciidoctor__make_pdf = $(call asciidoctor___make_pdf,$1,${BUILD.pdf}/$(basename
 define asciidoctor___make_pdf =
 $2: $1 |${BUILD.pdf}
 	${ECHO} "#  compile [asciidoctor:pdf] $$<"
-	${ASCIIDOCTOR} -r ${asciidoctor_ext}/attributes-pdf.rb \
+	${ASCIIDOCTOR} -r ${asciidoctor_ext}/attributes.rb \
 	   			   -r asciidoctor-pdf \
 			   	   -o $$@ -b pdf $$<
 CLEAN_PDF += $2
@@ -32,7 +32,7 @@ asciidoctor__make_html = $(eval $(call asciidoctor__make_html_impl,$1,${BUILD.ht
 define asciidoctor__make_html_impl =
 $2: $1 |${BUILD.html}
 	${ECHO} "#  compile [asciidoctor:html] $$<"
-	${ASCIIDOCTOR} -r ${asciidoctor_ext}/attributes-html.rb -o $$@ -b html5 $$<
+	${ASCIIDOCTOR} -r ${asciidoctor_ext}/attributes.rb -o $$@ -b html5 $$<
 CLEAN_HTML += $2
 ALL_HTML += $2
 endef

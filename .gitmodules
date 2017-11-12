@@ -1,9 +1,0 @@
-[submodule "asciidoctor/extensions-lab"]
-	path = etc/asciidoctor/extensions-lab
-	url = https://github.com/asciidoctor/asciidoctor-extensions-lab.git
-[submodule "asciidoctor/stylesheet-factory"]
-	path = etc/asciidoctor/stylesheet-factory
-	url = https://github.com/asciidoctor/asciidoctor-stylesheet-factory.git
-[submodule "etc/asciidoctor/asciidocotor-pdf"]
-	path = etc/asciidoctor/asciidocotor-pdf
-	url = https://github.com/asciidoctor/asciidoctor-pdf.git

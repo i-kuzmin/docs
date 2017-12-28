@@ -85,7 +85,7 @@ help:
 	$(ECHO) "#    toolchain: '${TOOLCHAIN}'"
 	$(ECHO) "#    BUILD=YES      - destination root ('${BUILD}')"
 	$(ECHO) "#    DEBUG          - enable debug/verbose output ('${DEBUG}')"
-	$(ECHO) "#    SOURCES.<ext>  - explicit sources"
+	$(ECHO) "#    SOURCESS.<ext>  - explicit sources"
 	$(ECHO) "#    ALL            - default target to build"
 	$(ECHO) ""
 

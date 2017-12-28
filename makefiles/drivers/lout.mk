@@ -13,9 +13,8 @@ $2: $1 |${BUILD.pdf}
 	${TOOLCHAIN}/bin/ulout "$$<"  "${BUILD.pdf}/$1.ps"
 	${PS2PDF} ${BUILD.pdf}/$1.ps $$@
 	${RM} ${BUILD.pdf}/$1.ps "$${BUILD.pdf}/koi8-r.$$<"
-	${ECHO} "#  done $$@"
 ALL_PDF += $2
 endef
 	#${TOOLCHAIN}/bin/ulout "$$<" | ${ICONV} -  -o "$${BUILD.pdf}/koi8-r.$$<"
 	#${LOUT} -o ${BUILD.pdf}/$1.ps "$${BUILD.pdf}/koi8-r.$$<"
-$(foreach src,$(sort ${SOURCE.lout}),$(call lout_to_pdf,${src}))
+$(foreach src,$(sort ${SOURCES.lout}),$(call lout_to_pdf,${src}))

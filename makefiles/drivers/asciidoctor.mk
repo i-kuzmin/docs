@@ -5,7 +5,7 @@ endif
 asciidoctor_ext := ${TOOLCHAIN}/etc/asciidoctor
 ASCIIDOCTOR := asciidoctor
 
-SOURCE.adoc := $(sort ${SOURCE.adoc})
+SOURCES.adoc := $(sort ${SOURCES.adoc})
 
 #
 # PDF driver
@@ -20,7 +20,7 @@ $2: $1 |${BUILD.pdf}
       -b pdf -o $$@ $$<
 ALL_PDF += $2
 endef
-$(foreach src,${SOURCE.adoc},$(eval $(call asciidoctor__make_pdf,${src})))
+$(foreach src,${SOURCES.adoc},$(eval $(call asciidoctor__make_pdf,${src})))
 
 #
 # HTML driver
@@ -36,7 +36,7 @@ $2: $1 |${BUILD.html}
 ALL_HTML += $2
 endef
 
-$(foreach src,${SOURCE.adoc},$(call asciidoctor__make_html,${src}))
+$(foreach src,${SOURCES.adoc},$(call asciidoctor__make_html,${src}))
 
 #
 # Latex driver
@@ -49,7 +49,7 @@ $2: $1 |${BUILD.latex}
 ALL_LATEX += $2
 endef
 
-$(foreach src,${SOURCE.adoc},$(call asciidoctor__make_latex,${src}))
+$(foreach src,${SOURCES.adoc},$(call asciidoctor__make_latex,${src}))
 
 
 

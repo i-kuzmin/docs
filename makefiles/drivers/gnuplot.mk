@@ -17,7 +17,7 @@ endef
 gnuplot__to_svg=$(eval $(call gnuplot__make_svg, \
 				$1,${BUILD.svg}/$(basename $1).svg))
 
-$(foreach src,${SOURCE.plt},$(call gnuplot__to_svg,${src}))
+$(foreach src,${SOURCES.plt},$(call gnuplot__to_svg,${src}))
 
 
 define gnuplot__make_png =
@@ -33,4 +33,4 @@ endef
 gnuplot__to_png=$(eval $(call gnuplot__make_png, \
 				$1,${BUILD.png}/$(basename $1).png))
 
-$(foreach src,${SOURCE.plt},$(call gnuplot__to_png,${src}))
+$(foreach src,${SOURCES.plt},$(call gnuplot__to_png,${src}))

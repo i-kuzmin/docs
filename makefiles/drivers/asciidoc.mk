@@ -40,5 +40,5 @@ endef
 asciidoc__to_pdf=$(eval $(call asciidoc__make_pdf,$1))
 asciidoc__to_html=$(eval $(call asciidoc__make_html,$1))
 
-$(foreach src,${SOURCE.adoc},$(call asciidoc__to_html,${src}))
-$(foreach src,${SOURCE.adoc},$(call asciidoc__to_pdf,${src}))
+$(foreach src,${SOURCES.adoc},$(call asciidoc__to_html,${src}))
+$(foreach src,${SOURCES.adoc},$(call asciidoc__to_pdf,${src}))

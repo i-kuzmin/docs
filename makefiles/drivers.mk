@@ -5,7 +5,7 @@ DEFAULT_EXT := adoc t2t lout plt
 drivers__name := $(notdir ${CURDIR})
 define drivers__add_default_source =
   ifneq (,$(wildcard ${drivers__name}.$1))
-    SOURCE.$1 += ${drivers__name}.$1
+    SOURCES.$1 += ${drivers__name}.$1
   endif
 endef
 
@@ -13,7 +13,7 @@ $(foreach ext,${DEFAULT_EXT}, \
 	$(eval $(call drivers__add_default_source,${ext})))
 
 # === Asciidoc ===
-ifneq (,${SOURCE.adoc})
+ifneq (,${SOURCES.adoc})
   ifeq (,$(filter ${BACKEND.adoc},asciidoctor asciidoc))
     $(error Unknown 'adoc' backed: '${BACKEND.adoc}')
   else
@@ -22,17 +22,17 @@ ifneq (,${SOURCE.adoc})
 endif
 
 # === Txt2Tags ===
-ifneq (,${SOURCE.t2t})
+ifneq (,${SOURCES.t2t})
   include ${TOOLCHAIN}/makefiles/drivers/t2t.mk
 endif
 
 # === Lout ===
-ifneq (,${SOURCE.lout})
+ifneq (,${SOURCES.lout})
   include ${TOOLCHAIN}/makefiles/drivers/lout.mk
 endif
 
 # === Gnuplot ===
-ifneq (,${SOURCE.plt})
+ifneq (,${SOURCES.plt})
   include ${TOOLCHAIN}/makefiles/drivers/gnuplot.mk
 endif
 
@@ -40,7 +40,7 @@ drivers_help:
 	$(ECHO) "#  Drivers:"
 	$(ECHO) "#    implicit soruces: \
 		$(filter ${drivers__name}.%,\
-			$(foreach ext,${DEFAULT_EXT},${SOURCE.${ext}}))"
+			$(foreach ext,${DEFAULT_EXT},${SOURCES.${ext}}))"
 	$(ECHO) "#    BACKEND.adoc - backend for aciidoc. (asciidoc[|tor]: '${BACKEND.adoc}')"
 	$(ECHO) "#"
 

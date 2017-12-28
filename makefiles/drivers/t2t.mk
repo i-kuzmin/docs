@@ -16,9 +16,9 @@ endef
 
 t2t__to_html=$(eval $(call t2t__make_html,$1,$(basename $1).html))
 
-$(foreach src,${SOURCE.t2t},$(call t2t__to_html,${src}))
+$(foreach src,${SOURCES.t2t},$(call t2t__to_html,${src}))
 
-${BUILD.html}/t2t.css: ${TOOLCHAIN}/etc/txt2tags/t2t.css
+${BUILD.html}/t2t.css: ${TOOLCHAIN}/etc/txt2tags/t2t.css |${BUILD.html}
 	${ECHO} "#  install [t2t] t2t.css"
 	${CP} $< $@
 

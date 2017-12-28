@@ -4,8 +4,8 @@ function main
 {
     ( perl -e "$PERL" <$1 \
     | iconv -c -f 'utf8' -t 'koi8-r' - \
-    | lout -a -o $2 2>&1 \
-    ) \
+    | lout -a -s -o $2 \
+    ) 2>&1 \
     | sed "s/^-\(:[0-9]\+:[0-9]\+\)/$1\1/"
 }
 

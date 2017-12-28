@@ -4,7 +4,7 @@ endif
 
 LOUT   := lout -a -s
 PS2PDF := ps2pdf
-ICONV  := iconv -c -f utf8 -t koi8-r
+#ICONV  := iconv -c -f utf8 -t koi8-r
 
 lout_to_pdf = $(eval $(call lout_make_pdf,$1,${BUILD.pdf}/$(basename $1).pdf))
 define lout_make_pdf =

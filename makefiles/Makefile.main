@@ -1,4 +1,4 @@
-__this := $(lastword $(MAKEFILE_LIST))
+_this := $(lastword $(MAKEFILE_LIST))
 
 BUILD ?= target
 BUILD.latex := ${BUILD}/latex
@@ -6,6 +6,7 @@ BUILD.html  := ${BUILD}/html
 BUILD.pdf   := ${BUILD}/pdf
 BUILD.png   := ${BUILD}/png
 BUILD.svg   := ${BUILD}/svg
+BUILD.adoc  := ${BUILD}/adoc
 
 DIRS += ${BUILD}       \
         ${BUILD.pdf}   \
@@ -13,6 +14,7 @@ DIRS += ${BUILD}       \
         ${BUILD.latex} \
         ${BUILD.svg}   \
         ${BUILD.png}   \
+        ${BUILD.adoc}  \
 
 ECHO  := @echo
 MKDIR := mkdir
@@ -20,7 +22,7 @@ MV    := mv
 RM    := rm -rf
 CP    := cp
 
-TOOLCHAIN := $(realpath $(dir ${__this})..)
+TOOLCHAIN := $(realpath $(dir ${_this})..)
 
 BACKEND.adoc ?= asciidoctor
 
@@ -29,29 +31,29 @@ ifndef DEBUG
 endif
 
 include ${TOOLCHAIN}/makefiles/drivers.mk
-
+#include ${TOOLCHAIN}/makefiles/index.mk
 
 .PHONY: clean deep_clean help
 
 # --- Clean Rules ---
 
-main__add_ext = $(eval $(call main__do_add_ext,$1,$2))
-define main__do_add_ext =
+main_add_ext = $(eval $(call main_do_add_ext,$1,$2))
+define main_do_add_ext =
 $1: $${ALL_$2}
 clean_$1:
-ifneq (,$$(wildcard $${CLEAN_$2}))
+ifneq (,$$(wildcard $${ALL_$2} $${CLEAN_$2}))
 	${ECHO} "#  clean $1..."
-	${RM} $(sort $${CLEAN_$2})
+	${RM} $(sort $${ALL_$2} $${CLEAN_$2})
 endif
 clean: clean_$1
 .PHONY: $1
 endef
 
-$(call main__add_ext,pdf,PDF)
-$(call main__add_ext,html,HTML)
-$(call main__add_ext,latex,LATEX)
-$(call main__add_ext,svg,SVG)
-$(call main__add_ext,png,PNG)
+$(call main_add_ext,pdf,PDF)
+$(call main_add_ext,html,HTML)
+$(call main_add_ext,latex,LATEX)
+$(call main_add_ext,svg,SVG)
+$(call main_add_ext,png,PNG)
 
 # --- ---
 
@@ -69,13 +71,13 @@ deep_clean:
 DEEP_CLEAN += ${BUILD}
 
 # --- Make Directory rule ---
-define main__make_dir =
+define main_make_dir =
 $1:
 	${ECHO} "#  create '$$@'"
 	${MKDIR} -p $$@
 endef
 $(foreach dirname,$(sort ${DIRS}),\
-	$(eval $(call main__make_dir,${dirname})))
+	$(eval $(call main_make_dir,${dirname})))
 # ---
 
 help:

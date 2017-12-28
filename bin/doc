@@ -208,6 +208,11 @@ function doc_new_adoc
     doc_new_impl asciidoctor adoc $@
 }
 
+function doc_new_lout
+{
+    doc_new_impl lout lout $@
+}
+
 function doc_new_usage
 {
     echo "USAGE"
@@ -220,6 +225,7 @@ function doc_new_usage
 
     echo "  plot name|name.plt  - create new gnuplot file"
     echo "  adoc name|name.adoc - create new asciidoc file"
+    echo "  lout name|name.lout - create new lout file"
     echo "  help                - generate this message"
     echo ""
     echo "ENVIRONMENTs"
@@ -241,6 +247,9 @@ function doc_new
 
         adoc) doc_new_adoc "$@";;
         *.adoc) doc_new_adoc "$cmd" "$@";;
+
+        lout) doc_new_lout "$@" ;;
+        *.lout) doc_new_lout "$cmd" "$@";;
 
         *) usage doc_new_usage "$cmd";;
     esac

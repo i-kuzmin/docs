@@ -23,7 +23,6 @@ $2: $1 |${BUILD.pdf}
 	${A2X} ${A2X_FLAGS.pdf} $$<
 	${MV} ${BUILD.pdf}/$$@ $$@
 	${ECHO} "#  done $$@"
-CLEAN_PDF += $2
 ALL_PDF += $2
 endef
 
@@ -35,7 +34,6 @@ define asciidoc__make_html_impl =
 ${BUILD.html}/$2: $1 |${BUILD.html}
 	${ECHO} "#  compile [asciidoc:html] $$<"
 	${ASCIIDOC} ${ASCIIDOC_FLAGS} -o $$@ -b html5 $$<
-CLEAN_HTML += ${BUILD.html}/$2
 ALL_HTML += ${BUILD.html}/$2
 endef
 

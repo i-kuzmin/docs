@@ -11,7 +11,6 @@ define t2t__make_html =
 ${BUILD.html}/$2: $1 ${BUILD.html}/t2t.css |${BUILD.html}
 	${ECHO} "#  compile [t2t->html] $$<"
 	${TXT2TAGS} -t html -o $$@ $$<
-CLEAN_HTML += ${BUILD.html}/$2
 ALL_HTML += ${BUILD.html}/$2
 endef
 

@@ -18,7 +18,6 @@ $2: $1 |${BUILD.pdf}
 	BACKEND=pdf ${ASCIIDOCTOR} \
 	  -r ${asciidoctor_ext}/attributes.rb \
       -b pdf -o $$@ $$<
-CLEAN_PDF += $2
 ALL_PDF += $2
 endef
 $(foreach src,${SOURCE.adoc},$(eval $(call asciidoctor__make_pdf,${src})))
@@ -34,7 +33,6 @@ $2: $1 |${BUILD.html}
 	BACKEND=html ${ASCIIDOCTOR} \
 	   	-r ${asciidoctor_ext}/attributes.rb \
         -o $$@ -b html5 $$<
-CLEAN_HTML += $2
 ALL_HTML += $2
 endef
 
@@ -48,7 +46,6 @@ define asciidoctor__make_latex_impl =
 $2: $1 |${BUILD.latex}
 	${ECHO} "#  compile [$$<] $$@"
 	${ASCIIDOCTOR} -r asciidoctor-latex -o $$@ -b latex $$<
-CLEAN_LATEX += $2
 ALL_LATEX += $2
 endef
 

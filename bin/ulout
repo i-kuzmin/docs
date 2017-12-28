@@ -1,0 +1,77 @@
+#!/bin/bash
+
+function main
+{
+    ( perl -e "$PERL" <$1 \
+    | iconv -c -f 'utf8' -t 'koi8-r' - \
+    | lout -a -o $2 2>&1 \
+    ) \
+    | sed "s/^-\(:[0-9]\+:[0-9]\+\)/$1\1/"
+}
+
+read -d '' -r PERL <<END_PERL
+while(<>) {
+    s/«/{\@Char guillemotleft}/;
+    s/»/{\@Char guillemotright}/;
+    s/„/{\@Char quotedblbase}/;
+    s/“/{\@Char quotedblleft}/;
+
+    s/ê/{\@Char ecircumflex}/;
+    s/â/{\@Char acircumflex}/;
+    s/î/{\@Char icircumflex}/;
+    s/ô/{\@Char ocircumflex}/;
+    s/û/{\@Char ucircumflex}/;
+    s/Ê/{\@Char Ecircumflex}/;
+    s/Â/{\@Char Acircumflex}/;
+    s/Î/{\@Char Icircumflex}/;
+    s/Ô/{\@Char Ocircumflex}/;
+    s/Û/{\@Char Ucircumflex}/;
+
+    s/è/{\@Char egrave}/;
+    s/à/{\@Char agrave}/;
+    s/ì/{\@Char igrave}/;
+    s/ò/{\@Char ograve}/;
+    s/ù/{\@Char ugrave}/;
+    s/È/{\@Char Egrave}/;
+    s/À/{\@Char Agrave}/;
+    s/Ì/{\@Char Igrave}/;
+    s/Ò/{\@Char Ograve}/;
+    s/Ù/{\@Char Ugrave}/;
+
+    s/é/{\@Char eacute}/;
+    s/á/{\@Char aacute}/;
+    s/í/{\@Char iacute}/;
+    s/ó/{\@Char oacute}/;
+    s/ú/{\@Char uacute}/;
+    s/É/{\@Char Eacute}/;
+    s/Á/{\@Char Aacute}/;
+    s/Í/{\@Char Iacute}/;
+    s/Ó/{\@Char Oacute}/;
+    s/Ú/{\@Char Uacute}/;
+
+    s/ẽ/{\@Char etilde}/;
+    s/ã/{\@Char atilde}/;
+    s/ĩ/{\@Char itilde}/;
+    s/õ/{\@Char otilde}/;
+    s/ũ/{\@Char utilde}/;
+    s/Ẽ/{\@Char Etilde}/;
+    s/Ã/{\@Char Atilde}/;
+    s/Ĩ/{\@Char Itilde}/;
+    s/Õ/{\@Char Otilde}/;
+    s/Ũ/{\@Char Utilde}/;
+
+    s/ç/{\@Char ccedilla}/;
+    s/Ç/{\@Char Ccedilla}/;
+
+    print;
+}
+END_PERL
+
+read -d '' -r FNAME <<END_FNAME
+while(<>){
+    s/^-(:[0-9]+:[0-9]+)/$1\1/;
+    print;
+}
+END_FNAME
+
+main "$@"

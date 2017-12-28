@@ -11,7 +11,6 @@ $2: $1 |${BUILD.svg}
         "set terminal svg; \
          set output '$$@'; \
 		" $$< 
-CLEAN_SVG += $2
 ALL_SVG += $2
 endef
 
@@ -28,7 +27,6 @@ $2: $1 |${BUILD.png}
         "set terminal png; \
          set output '$$@'; \
 		" $$< 
-CLEAN_PNG += $2
 ALL_PNG += $2
 endef
 

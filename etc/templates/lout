@@ -1,0 +1,13 @@
+@SysInclude {doc}
+@SysInclude {dejavu}
+
+def ">>"  { @Char "guillemotright" @OrIfPlain ">>" }
+def "<<"  { @Char "guillemotleft"  @OrIfPlain "<<" }
+
+@Document
+  @InitialFont {DejaVuSerif Base 11pt}
+  @InitialLanguage { Russian }
+@Text @Begin
+#@Display @Heading { Заглавие }
+@End @Text
+
